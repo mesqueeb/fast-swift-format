@@ -2,7 +2,7 @@
   "name": "fast-swift-format",
   "displayName": "Fast Swift Format",
   "description": "Apple's swift-format directly, without waiting for SourceKit-LSP or project discovery.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "mesqueeb",
   "license": "MIT",
   "engines": {

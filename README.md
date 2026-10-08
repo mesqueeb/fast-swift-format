@@ -4,9 +4,9 @@ Apple's `swift-format`, directly in VS Code. Format on save without waiting for 
 
 [Install from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mesqueeb.fast-swift-format).
 
-## Why we made this
+## Why I made this
 
-We measured a 21-second toolchain discovery delay in the Swift VS Code extension. Meanwhile, launching Apple's standalone `swift-format`, sending it source, formatting it, and waiting for it to exit took only 10–13 milliseconds on the same Mac once the tools were warm.
+I measured a 21-second toolchain discovery delay in the Swift VS Code extension. Meanwhile, launching Apple's standalone `swift-format`, sending it source, formatting it, and waiting for it to exit took only 10–13 milliseconds on the same Mac once the tools were warm.
 
 Formatting should not need to wait for the rest of the development environment. Fast Swift Format registers a native VS Code formatting provider and calls the formatter directly. Actual VS Code save requests measured 15–33 milliseconds, including process launch. These are local measurements on small files, not a guarantee for every file or machine. The exact cause of the original 21-second discovery delay remains unproven; this extension removes that dependency from formatting.
 
@@ -57,7 +57,7 @@ This is Apple's `swift-format`, not Nick Lockwood's separate `SwiftFormat` tool.
 
 The extension sends the current editor text through stdin and supplies the document's path with `--assume-filename`. Apple's formatter discovers the nearest `.swift-format`, including configurations in nested directories. It does not force a top-level configuration.
 
-We verified actual VS Code saves against direct CLI output with a source-folder line length of 100 and a nested test-folder line length of 200. Both used the correct configuration.
+I verified actual VS Code saves against direct CLI output with a source-folder line length of 100 and a nested test-folder line length of 200. Both used the correct configuration.
 
 For an untitled document, configuration lookup starts in the sole workspace folder. With multiple workspace folders or no open folder, it starts in the operating system's temporary directory. Save the document into its project to give it an unambiguous configuration path.
 
@@ -69,7 +69,7 @@ For an untitled document, configuration lookup starts in the sole workspace fold
 - Cancels the formatter when VS Code cancels the request and discards results if the document changes during formatting.
 - Preserves the document on process failures or unexpectedly empty output.
 
-There is no formatter daemon or keep-warm service. A direct formatter process starts cheaply in our measurements; the expensive discovery steps are avoided. OS caches and machine load can still affect startup time.
+There is no formatter daemon or keep-warm service. A direct formatter process starts cheaply in my measurements; the expensive discovery steps are avoided. OS caches and machine load can still affect startup time.
 
 Run **Fast Swift Format: Show Output** to see request durations, including process launch.
 
@@ -79,7 +79,7 @@ Run **Fast Swift Format: Show Output** to see request durations, including proce
 npm ci --ignore-scripts
 npm run compile
 npm run package
-code --install-extension ./fast-swift-format-0.1.0.vsix
+code --install-extension ./fast-swift-format-0.1.1.vsix
 ```
 
 The extension has no runtime npm dependencies. Research and optional startup diagnostics are in [`docs/research/swift-formatter-startup.md`](docs/research/swift-formatter-startup.md) and [`diagnostics/README.md`](diagnostics/README.md).
