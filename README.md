@@ -2,6 +2,8 @@
 
 Apple's `swift-format`, directly in VS Code. Format on save without waiting for Swift extension startup, SourceKit-LSP, package discovery, or indexing.
 
+[Install from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mesqueeb.fast-swift-format).
+
 ## Why we made this
 
 We measured a 21-second toolchain discovery delay in the Swift VS Code extension. Meanwhile, launching Apple's standalone `swift-format`, sending it source, formatting it, and waiting for it to exit took only 10–13 milliseconds on the same Mac once the tools were warm.

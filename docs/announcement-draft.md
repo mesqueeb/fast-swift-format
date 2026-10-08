@@ -1,6 +1,6 @@
 # Announcement draft
 
-Publish this after the Marketplace listing is live.
+The Marketplace listing is live. This draft is ready for review before posting to the Swift Forums VS Code extension category: https://forums.swift.org/c/development/vscode-swift-extension/81.
 
 ## Title
 
