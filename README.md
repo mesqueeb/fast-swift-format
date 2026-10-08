@@ -84,6 +84,8 @@ code --install-extension ./fast-swift-format-0.1.1.vsix
 
 The extension has no runtime npm dependencies. Research and optional startup diagnostics are in [`docs/research/swift-formatter-startup.md`](docs/research/swift-formatter-startup.md) and [`diagnostics/README.md`](diagnostics/README.md).
 
+Releases publish automatically when a new version is pushed to `main`. See [publishing setup and release instructions](docs/publishing.md).
+
 ## License
 
 MIT. Created by [Luca Ban / mesqueeb](https://github.com/mesqueeb).

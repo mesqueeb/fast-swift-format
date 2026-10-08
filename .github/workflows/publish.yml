@@ -1,0 +1,85 @@
+name: Publish extension
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: marketplace-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Build extension package
+        run: npm run package -- --out extension.vsix
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-vsix
+          path: extension.vsix
+          if-no-files-found: error
+      - name: Check published versions
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(node -p 'require("./package.json").version')
+          extension=$(node -p 'const p = require("./package.json"); `${p.publisher}.${p.name}`')
+          npx --no-install vsce show "$extension" --json > "$RUNNER_TEMP/marketplace.json"
+          jq -e '.versions | type == "array"' "$RUNNER_TEMP/marketplace.json" > /dev/null
+          if jq -e --arg version "$version" 'any(.versions[]; .version == $version)' "$RUNNER_TEMP/marketplace.json" > /dev/null; then
+            echo 'unpublished=false' >> "$GITHUB_OUTPUT"
+            echo "Version $version is already published; skipping upload." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'unpublished=true' >> "$GITHUB_OUTPUT"
+            echo "Publishing version $version." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Select publishing authentication
+        if: steps.version.outputs.unpublished == 'true' || github.event_name == 'workflow_dispatch'
+        id: auth
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "$AZURE_CLIENT_ID" || -n "$AZURE_TENANT_ID" ]]; then
+            if [[ -z "$AZURE_CLIENT_ID" || -z "$AZURE_TENANT_ID" ]]; then
+              echo '::error::Set both AZURE_CLIENT_ID and AZURE_TENANT_ID. See docs/publishing.md.'
+              exit 1
+            fi
+            echo 'mode=entra' >> "$GITHUB_OUTPUT"
+          else
+            echo '::error::Set AZURE_CLIENT_ID and AZURE_TENANT_ID. See docs/publishing.md.'
+            exit 1
+          fi
+      - name: Sign in using GitHub federated identity
+        if: steps.auth.outputs.mode == 'entra'
+        uses: azure/login@053f7285eb20bf5469ef084617b0b24d3cec53fc # v3.1.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+      - name: Verify Entra publishing access
+        if: steps.auth.outputs.mode == 'entra'
+        run: |
+          identity=$(az rest --url https://app.vssps.visualstudio.com/_apis/profile/profiles/me --resource 499b84ac-1321-427f-aa17-267ca6975798 --query id --output tsv)
+          echo "Marketplace identity ID: $identity" >> "$GITHUB_STEP_SUMMARY"
+          npx --no-install vsce verify-pat mesqueeb --azure-credential
+      - name: Publish using Entra
+        if: steps.version.outputs.unpublished == 'true' && steps.auth.outputs.mode == 'entra'
+        run: npx --no-install vsce publish --packagePath extension.vsix --azure-credential
