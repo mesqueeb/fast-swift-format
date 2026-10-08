@@ -1,0 +1,81 @@
+{
+  "name": "fast-swift-format",
+  "displayName": "Fast Swift Format",
+  "description": "Apple's swift-format directly, without waiting for SourceKit-LSP or project discovery.",
+  "version": "0.1.0",
+  "publisher": "mesqueeb",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:swift"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "compile": "tsc",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package --no-dependencies"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "fastSwiftFormat.showOutput",
+        "title": "Fast Swift Format: Show Output"
+      }
+    ],
+    "configuration": {
+      "title": "Fast Swift Format",
+      "properties": {
+        "fastSwiftFormat.executable": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Absolute path to Apple's swift-format executable. Empty discovers it once with xcrun on macOS, or uses PATH elsewhere. Setting this avoids toolchain discovery entirely."
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "swift",
+        "aliases": [
+          "Swift",
+          "swift"
+        ],
+        "extensions": [
+          ".swift",
+          ".swiftinterface"
+        ]
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.88.0",
+    "typescript": "^5.9.0",
+    "@vscode/vsce": "^3.0.0"
+  },
+  "author": "Luca Ban (mesqueeb)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mesqueeb/fast-swift-format.git"
+  },
+  "homepage": "https://github.com/mesqueeb/fast-swift-format#readme",
+  "bugs": {
+    "url": "https://github.com/mesqueeb/fast-swift-format/issues"
+  },
+  "keywords": [
+    "swift",
+    "swift-format",
+    "formatter",
+    "format-on-save",
+    "apple"
+  ],
+  "extensionKind": [
+    "workspace"
+  ]
+}

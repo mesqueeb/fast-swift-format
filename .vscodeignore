@@ -1,0 +1,10 @@
+node_modules/**
+src/**
+diagnostics/**
+tsconfig.json
+package-lock.json
+.gitignore
+**/*.vsix
+
+docs/**
+.github/**
