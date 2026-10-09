@@ -79,7 +79,7 @@ Run **Fast Swift Format: Show Output** to see request durations, including proce
 npm ci --ignore-scripts
 npm run compile
 npm run package
-code --install-extension ./fast-swift-format-0.1.2.vsix
+code --install-extension ./fast-swift-format-0.1.3.vsix
 ```
 
 The extension has no runtime npm dependencies. Research and optional startup diagnostics are in [`docs/research/swift-formatter-startup.md`](docs/research/swift-formatter-startup.md) and [`diagnostics/README.md`](diagnostics/README.md).

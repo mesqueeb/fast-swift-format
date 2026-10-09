@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Release through a GitHub push to verify automatic Marketplace publishing.
+- Formatter behavior is unchanged.
+
 ## 0.1.2
 
 - Document automatic Marketplace releases from GitHub Actions using Microsoft Entra federation.
