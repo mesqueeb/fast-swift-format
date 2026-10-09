@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Document automatic Marketplace releases from GitHub Actions using Microsoft Entra federation.
+- Formatter behavior is unchanged.
+
 ## 0.1.1
 
 - Use first-person wording in the README and Marketplace description.
